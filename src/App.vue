@@ -1,16 +1,14 @@
 <script setup>
-import { loginAPI } from './api/index'
-const login = async () => {
-  const res = await loginAPI()
-  console.log(res)
-}
+
 </script>
 
 <template>
   <div>
-    <el-button type="primary" @click="login">登录</el-button>
+    <!-- 以及路由 -->
+    <router-view></router-view>
   </div>
 </template>
 
 <style scoped>
+
 </style>
