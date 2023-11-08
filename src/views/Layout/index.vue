@@ -113,6 +113,7 @@ const handleClose = (key, keyPath) => {
     console.log(key, keyPath)
 }
 
+// 当页面挂载完成时，读取用户信息，并存入到仓库中
 onMounted(async () => {
     const { data: res } = await getUserInfoAPI()
     tokenStore.updateUserInfo(res.data)

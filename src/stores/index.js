@@ -1,4 +1,3 @@
-
 import { defineStore } from 'pinia'
 
 export const useTokenStore = defineStore('tokenStore', {
@@ -9,7 +8,7 @@ export const useTokenStore = defineStore('tokenStore', {
         }
     },
     getters: {
-        
+
     },
     actions: {
         // 保存token
