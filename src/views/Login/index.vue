@@ -40,7 +40,7 @@ const login = () => {
         // 将token存入到仓库
         tokenStore.updateToken(res.token)
         // 跳转页面
-        router.push('/home')
+        router.push('/layout')
       } else {
         ElMessage({
           message: res.message,
