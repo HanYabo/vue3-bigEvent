@@ -4,11 +4,14 @@
 
 <template>
   <div>
-    <!-- 以及路由 -->
+    <!-- 一级路由 -->
     <router-view></router-view>
   </div>
 </template>
 
-<style scoped>
-
+<style>
+* {
+  margin: 0;
+  padding: 0;
+}
 </style>
