@@ -2,35 +2,49 @@
 import { ref } from 'vue'
 import { registerAPI } from '../../api/index'
 import { useRouter } from 'vue-router'
-const formRef = ref(null) 
+import { ElMessage } from 'element-plus';
+// 表单验证
+const registerRef = ref(null) 
 const router = useRouter()
 const form = ref({
     username: '',
     password: ''
 })
 
+// 规则验证对象
 const rules = ref({
-    username: [
-        { required: true, message: '请输入账号', trigger: 'blur' },
-        { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
-    ],
-    password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
-        { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
-    ]
+  username: [
+    { required: true, message: '请输入账号', trigger: 'blur' },
+    {pattern: /^[a-zA-Z0-9]{1,10}$/, message: '用户名必须是1-10的字母数字组合', trigger: 'blur'}
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    {pattern: /^[a-zA-Z0-9]{6,12}$/, message: '密码必须是6-12的非空字符', trigger: 'blur'}
+  ]
 })
 
 // 登录
 const goLogin = () => {
     router.push('/login')
 }
-// 注册
+// 跳转到注册页面
 const register = () => {
     // 检验form对象是否合法，如果合法，调用registerAPI接口，如果不合法，拒绝表单提交
-    formRef.value.validate(async valid => {
+    registerRef.value.validate(async valid => {
         if (valid) {
-            const res = await registerAPI(form.value)
-            console.log(res)
+            const { data: res } = await registerAPI(form.value)
+            if(res.status === 0) {
+                ElMessage({
+                    message: '注册成功！',
+                    type:'success'
+                })
+                router.push('/login')
+            }else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
         }else {
             return false;
         }
@@ -44,17 +58,17 @@ const register = () => {
             <!-- 标题盒子 -->
             <div class="title-box"></div>
             <!-- 表单区域 -->
-            <el-form :model="form" :rules="rules" ref="formRef">
-                <el-form-item label="账号" prop="username">
+            <el-form :model="form" :rules="rules" ref="registerRef">
+                <el-form-item prop="username">
                     <el-input v-model="form.username" type="text" placeholder="请输入账号" />
                 </el-form-item>
-                <el-form-item label="密码" prop="password">
+                <el-form-item prop="password">
                     <el-input v-model="form.password" type="password" placeholder="请输入密码" />
                 </el-form-item>
-                <el-form-item class="btn-register">
-                    <el-button type="primary" @click="register">注册</el-button>
+                <el-form-item>
+                    <el-button type="primary" @click="register" class="btn-register">注册</el-button>
                 </el-form-item>
-                <el-form-item class="btn-login">
+                <el-form-item>
                     <el-link type="info" @click="goLogin">去登录</el-link>
                 </el-form-item>
             </el-form>
@@ -88,17 +102,5 @@ const register = () => {
 
 .btn-register {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin-top: 30px;
-  justify-content: center;
-  align-items: center;
 }
-.btn-login {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-}
-
 </style>

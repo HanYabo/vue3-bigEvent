@@ -1,12 +1,12 @@
 import request from '@/utils/request'
 
-export const loginAPI = (form) => {
+export const loginAPI = ({ username, password }) => {
     return request({
         url: '/api/login',
         method: 'POST',
         data: {
-            username: form.username,
-            password: form.password
+            username: username,
+            password: password
         }
     })
 }
@@ -16,8 +16,8 @@ export const registerAPI = (form) => {
         url: '/api/register',
         method: 'POST',
         data: {
-            username: form.username,
-            password: form.password
+            username: username,
+            password: password
         }
     })
 }
