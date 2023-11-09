@@ -76,7 +76,7 @@
                             <el-icon><User/></el-icon>
                             <span>基本资料</span>
                         </el-menu-item>
-                        <el-menu-item index="3.2">
+                        <el-menu-item index="avatar">
                             <el-icon><Camera/></el-icon>
                             <span>更换头像</span>
                         </el-menu-item>
