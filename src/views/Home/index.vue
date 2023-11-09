@@ -45,7 +45,9 @@
         </div>
 
         <div class="container-fluid">
-            <div class="column_pannel" id="column_show"></div>
+            <div class="column_pannel" id="column_show">
+                <Echarts :option="columnOption"></Echarts>
+            </div>
         </div>
     </div>
 </template>
@@ -159,62 +161,164 @@ const curveOption = ref({
         height: 220
     }
 })
-const pieOption = ref(
-    {
-        title: {
-            top: 10,
-            text: '分类文章数量比',
-            x: 'center'
-        },
-        tooltip: {
-            trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
-        },
-        color: ['#5885e8', '#13cfd5', '#00ce68', '#ff9565'],
-        legend: {
-            x: 'center',
-            top: 65,
-            data: ['奇趣事', '会生活', '爱旅行', '趣美味']
-        },
-        toolbox: {
-            show: true,
-            x: 'center',
-            top: 35,
-            feature: {
-                mark: { show: true },
-                dataView: { show: true, readOnly: false },
-                magicType: {
-                    show: true,
-                    type: ['pie', 'funnel'],
-                    option: {
-                        funnel: {
-                            x: '25%',
-                            width: '50%',
-                            funnelAlign: 'left',
-                            max: 1548
-                        }
+const pieOption = ref({
+    title: {
+        top: 10,
+        text: '分类文章数量比',
+        x: 'center'
+    },
+    tooltip: {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    color: ['#5885e8', '#13cfd5', '#00ce68', '#ff9565'],
+    legend: {
+        x: 'center',
+        top: 65,
+        data: ['奇趣事', '会生活', '爱旅行', '趣美味']
+    },
+    toolbox: {
+        show: true,
+        x: 'center',
+        top: 35,
+        feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            magicType: {
+                show: true,
+                type: ['pie', 'funnel'],
+                option: {
+                    funnel: {
+                        x: '25%',
+                        width: '50%',
+                        funnelAlign: 'left',
+                        max: 1548
                     }
-                },
-                restore: { show: true },
-                saveAsImage: { show: true }
-            }
+                }
+            },
+            restore: { show: true },
+            saveAsImage: { show: true }
+        }
+    },
+    calculable: true,
+    series: [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius: ['45%', '60%'],
+            center: ['50%', '65%'],
+            data: [
+                { value: 300, name: '奇趣事' },
+                { value: 100, name: '会生活' },
+                { value: 260, name: '爱旅行' },
+                { value: 180, name: '趣美味' }
+            ]
+        }
+    ]
+})
+const columnOption = ref({
+    title: {
+        text: '文章访问量',
+        left: 'center',
+        top: '10'
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    legend: {
+        data: ['奇趣事', '会生活', '爱旅行', '趣美味'],
+        top: '40'
+    },
+    toolbox: {
+        show: true,
+        feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            magicType: { show: true, type: ['line', 'bar'] },
+            restore: { show: true },
+            saveAsImage: { show: true }
+        }
+    },
+    calculable: true,
+    xAxis: [
+        {
+            type: 'category',
+            data: ['1月', '2月', '3月', '4月', '5月']
+        }
+    ],
+    yAxis: [
+        {
+            name: '访问量',
+            type: 'value'
+        }
+    ],
+    series: [
+        {
+            name: '奇趣事',
+            type: 'bar',
+            barWidth: 20,
+            itemStyle: {
+                normal: { areaStyle: { type: 'default' }, color: '#fd956a' }
+            },
+            data: [800, 708, 920, 1090, 1200]
         },
-        calculable: true,
-        series: [
-            {
-                name: '访问来源',
-                type: 'pie',
-                radius: ['45%', '60%'],
-                center: ['50%', '65%'],
-                data: [
-                    { value: 300, name: '奇趣事' },
-                    { value: 100, name: '会生活' },
-                    { value: 260, name: '爱旅行' },
-                    { value: 180, name: '趣美味' }
-                ]
+        {
+            name: '会生活',
+            type: 'bar',
+            barWidth: 20,
+            itemStyle: {
+                normal: { areaStyle: { type: 'default' }, color: '#2bb6db' }
+            },
+            data: [400, 468, 520, 690, 800]
+        },
+        {
+            name: '爱旅行',
+            type: 'bar',
+            barWidth: 20,
+            itemStyle: {
+                normal: { areaStyle: { type: 'default' }, color: '#13cfd5' }
+            },
+            data: [500, 668, 520, 790, 900]
+        },
+        {
+            name: '趣美味',
+            type: 'bar',
+            barWidth: 20,
+            itemStyle: {
+                normal: { areaStyle: { type: 'default' }, color: '#00ce68' }
+            },
+            data: [600, 508, 720, 890, 1000]
+        }
+    ],
+    grid: {
+        show: true,
+        x: 50,
+        x2: 30,
+        y: 80,
+        height: 260
+    },
+    dataZoom: [//给x轴设置滚动条
+        {
+            start: 0,//默认为0
+            end: 100 - 1000 / 31,//默认为100
+            type: 'slider',
+            show: true,
+            xAxisIndex: [0],
+            handleSize: 0,//滑动条的 左右2个滑动条的大小
+            height: 8,//组件高度
+            left: 45, //左边的距离
+            right: 50,//右边的距离
+            bottom: 26,//右边的距离
+            handleColor: '#ddd',//h滑动图标的颜色
+            handleStyle: {
+                borderColor: "#cacaca",
+                borderWidth: "1",
+                shadowBlur: 2,
+                background: "#ddd",
+                shadowColor: "#ddd",
             }
-        ]
-    })
+        }]
+})
 </script>
 
 <style lang="less" scoped>
@@ -281,6 +385,7 @@ const pieOption = ref(
     border: 1px solid #e7e7e9;
     background-color: #fff !important;
     margin-bottom: 20px;
+    margin: 0 auto;
 }
 
 .column_pannel {
