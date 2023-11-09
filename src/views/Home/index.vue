@@ -33,11 +33,13 @@
             <el-row class="curve-pie" :gutter="10">
                 <el-col :sm="16" :xs="16">
                     <div class="gragh_pannel" id="curve_show">
-                        <Echarts :option="option"></Echarts>
+                        <Echarts :option="curveOption"></Echarts>
                     </div>
                 </el-col>
                 <el-col :sm="8" :xs="8">
-                    <div class="gragh_pannel" id="pie_show"></div>
+                    <div class="gragh_pannel" id="pie_show">
+                        <Echarts :option="pieOption"></Echarts>
+                    </div>
                 </el-col>
             </el-row>
         </div>
@@ -49,27 +51,170 @@
 </template>
 
 <script setup>
+import * as echarts from 'echarts'
 import { ref } from 'vue'
-const option = ref({
+const aList_all = ref([
+    { 'count': 36, 'date': '2019-04-13' },
+    { 'count': 52, 'date': '2019-04-14' },
+    { 'count': 78, 'date': '2019-04-15' },
+    { 'count': 85, 'date': '2019-04-16' },
+    { 'count': 65, 'date': '2019-04-17' },
+    { 'count': 72, 'date': '2019-04-18' },
+    { 'count': 88, 'date': '2019-04-19' },
+    { 'count': 64, 'date': '2019-04-20' },
+    { 'count': 72, 'date': '2019-04-21' },
+    { 'count': 90, 'date': '2019-04-22' },
+    { 'count': 96, 'date': '2019-04-23' },
+    { 'count': 100, 'date': '2019-04-24' },
+    { 'count': 102, 'date': '2019-04-25' },
+    { 'count': 110, 'date': '2019-04-26' },
+    { 'count': 123, 'date': '2019-04-27' },
+    { 'count': 100, 'date': '2019-04-28' },
+    { 'count': 132, 'date': '2019-04-29' },
+    { 'count': 146, 'date': '2019-04-30' },
+    { 'count': 200, 'date': '2019-05-01' },
+    { 'count': 180, 'date': '2019-05-02' },
+    { 'count': 163, 'date': '2019-05-03' },
+    { 'count': 110, 'date': '2019-05-04' },
+    { 'count': 80, 'date': '2019-05-05' },
+    { 'count': 82, 'date': '2019-05-06' },
+    { 'count': 70, 'date': '2019-05-07' },
+    { 'count': 65, 'date': '2019-05-08' },
+    { 'count': 54, 'date': '2019-05-09' },
+    { 'count': 40, 'date': '2019-05-10' },
+    { 'count': 45, 'date': '2019-05-11' },
+    { 'count': 38, 'date': '2019-05-12' },
+])
+
+const aCount = aList_all.value.map(item => item.count)
+
+const aDate = aList_all.value.map(item => item.date)
+
+const curveOption = ref({
     title: {
-        text: 'ECharts 入门示例'
+        text: '月新增文章数',
+        left: 'center',
+        top: '10'
     },
-    tooltip: {},
+    tooltip: {
+        trigger: 'axis'
+    },
     legend: {
-        data: ['销量']
+        data: ['新增文章'],
+        top: '40'
     },
-    xAxis: {
-        data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+    toolbox: {
+        show: true,
+        feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            magicType: { show: true, type: ['line', 'bar'] },
+            restore: { show: true },
+            saveAsImage: { show: true }
+        }
     },
-    yAxis: {},
+    calculable: true,
+    xAxis: [
+        {
+            name: '日',
+            type: 'category',
+            boundaryGap: false,
+            data: aDate
+        }
+    ],
+    yAxis: [
+        {
+            name: '月新增文章数',
+            type: 'value'
+        }
+    ],
     series: [
         {
-            name: '销量',
-            type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
+            name: '新增文章',
+            type: 'line',
+            smooth: true,
+            itemStyle: { normal: { areaStyle: { type: 'default' }, color: '#f80' }, lineStyle: { color: '#f80' } },
+            data: aCount
+        }],
+    areaStyle: {
+        normal: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: 'rgba(255,136,0,0.39)'
+            }, {
+                offset: .34,
+                color: 'rgba(255,180,0,0.25)'
+            }, {
+                offset: 1,
+                color: 'rgba(255,222,0,0.00)'
+            }])
+
         }
-    ]
+    },
+    grid: {
+        show: true,
+        x: 50,
+        x2: 50,
+        y: 80,
+        height: 220
+    }
 })
+const pieOption = ref(
+    {
+        title: {
+            top: 10,
+            text: '分类文章数量比',
+            x: 'center'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        color: ['#5885e8', '#13cfd5', '#00ce68', '#ff9565'],
+        legend: {
+            x: 'center',
+            top: 65,
+            data: ['奇趣事', '会生活', '爱旅行', '趣美味']
+        },
+        toolbox: {
+            show: true,
+            x: 'center',
+            top: 35,
+            feature: {
+                mark: { show: true },
+                dataView: { show: true, readOnly: false },
+                magicType: {
+                    show: true,
+                    type: ['pie', 'funnel'],
+                    option: {
+                        funnel: {
+                            x: '25%',
+                            width: '50%',
+                            funnelAlign: 'left',
+                            max: 1548
+                        }
+                    }
+                },
+                restore: { show: true },
+                saveAsImage: { show: true }
+            }
+        },
+        calculable: true,
+        series: [
+            {
+                name: '访问来源',
+                type: 'pie',
+                radius: ['45%', '60%'],
+                center: ['50%', '65%'],
+                data: [
+                    { value: 300, name: '奇趣事' },
+                    { value: 100, name: '会生活' },
+                    { value: 260, name: '爱旅行' },
+                    { value: 180, name: '趣美味' }
+                ]
+            }
+        ]
+    })
 </script>
 
 <style lang="less" scoped>
