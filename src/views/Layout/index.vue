@@ -40,14 +40,14 @@
                 </div>
                 <!-- 侧边栏导航区 -->
                 <el-menu active-text-color="#ffd04b" background-color="#393d49" class="el-menu-vertical-demo"
-                    default-active="home" text-color="#fff" @open="handleOpen" @close="handleClose" unique-opened :router="router">
+                    default-active="home" text-color="#fff" @open="handleOpen" @close="handleClose" unique-opened router>
                     <el-menu-item index="home">
                         <el-icon>
                             <House />
                         </el-icon>
                         <span>首页</span>
                     </el-menu-item>
-                    <el-sub-menu index="2">
+                    <el-sub-menu index="#">
                         <template #title>
                             <el-icon>
                                 <Memo />
@@ -67,12 +67,12 @@
                             <span>文章列表</span>
                         </el-menu-item>
                     </el-sub-menu>
-                    <el-sub-menu index="3">
+                    <el-sub-menu index="user">
                         <template #title>
                             <el-icon><User/></el-icon>
                             <span>个人中心</span>
                         </template>
-                        <el-menu-item index="3.1">
+                        <el-menu-item index="userinfo">
                             <el-icon><User/></el-icon>
                             <span>基本资料</span>
                         </el-menu-item>
@@ -100,7 +100,7 @@
 </template>
   
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted} from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useTokenStore } from '@/stores'
 import { useRouter } from 'vue-router'
@@ -118,6 +118,7 @@ onMounted(async () => {
     // 当token存在时，再请求获取用户信息
     const { data: res } = await getUserInfoAPI()
     tokenStore.updateUserInfo(res.data)
+    console.log(route.path)
 })
 
 const quit = () => {
