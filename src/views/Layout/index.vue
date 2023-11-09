@@ -10,7 +10,8 @@
                 <el-sub-menu index="1">
                     <template #title>
                         <!-- 头像 -->
-                        <img src="../../assets/images/logo.png" alt="" class="avatar" />
+                        <img v-if="tokenStore.getUserPic" :src="tokenStore.getUserPic" alt="" class="avatar" />
+                        <img v-else src="../../assets/images/logo.png" alt="" class="avatar" />
                         <span>个人中心</span>
                     </template>
                     <el-menu-item index="1-1"><el-icon>
@@ -36,7 +37,7 @@
                 <div class="user-box">
                     <img v-if="tokenStore.getUserPic" :src="tokenStore.getUserPic" alt="">
                     <img src="../../assets/images/logo.png" alt="" v-else>
-                    <span>欢迎{{ tokenStore.getNickname || tokenStore.getUsername}}</span>
+                    <span>欢迎{{ tokenStore.getNickname || tokenStore.getUsername }}</span>
                 </div>
                 <!-- 侧边栏导航区 -->
                 <el-menu active-text-color="#ffd04b" background-color="#393d49" class="el-menu-vertical-demo"
@@ -69,19 +70,27 @@
                     </el-sub-menu>
                     <el-sub-menu index="user">
                         <template #title>
-                            <el-icon><User/></el-icon>
+                            <el-icon>
+                                <User />
+                            </el-icon>
                             <span>个人中心</span>
                         </template>
                         <el-menu-item index="userinfo">
-                            <el-icon><User/></el-icon>
+                            <el-icon>
+                                <User />
+                            </el-icon>
                             <span>基本资料</span>
                         </el-menu-item>
                         <el-menu-item index="avatar">
-                            <el-icon><Camera/></el-icon>
+                            <el-icon>
+                                <Camera />
+                            </el-icon>
                             <span>更换头像</span>
                         </el-menu-item>
-                        <el-menu-item index="3.3">
-                            <el-icon><Key/></el-icon>
+                        <el-menu-item index="resetpwd">
+                            <el-icon>
+                                <Key />
+                            </el-icon>
                             <span>重置密码</span>
                         </el-menu-item>
                     </el-sub-menu>
@@ -100,7 +109,7 @@
 </template>
   
 <script setup>
-import { onMounted} from 'vue'
+import { onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useTokenStore } from '@/stores'
 import { useRouter } from 'vue-router'
@@ -140,10 +149,9 @@ const quit = () => {
             type: 'success',
             message: '退出成功！',
         })
+    }).catch(() => {
+        // 退出失败
     })
-        .catch(() => {
-            // 退出失败
-        })
 }
 </script>
   
@@ -209,5 +217,6 @@ const quit = () => {
         color: white;
         font-size: 12px;
     }
-}</style>
+}
+</style>
   

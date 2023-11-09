@@ -12,7 +12,7 @@
             <div class="btn-box">
                 <input type="file" accept="image/*" style="display: none" ref="iptRef" @change="onFileChange($event)"/>
                 <el-button type="primary" @click="chooseImg()"><el-icon><Plus /></el-icon>选择图片</el-button>
-                <el-button type="success"><el-icon><Upload /></el-icon>上传头像</el-button>
+                <el-button type="success" @click="upload()"><el-icon><Upload /></el-icon>上传头像</el-button>
             </div>
         </div>
     </el-card>
@@ -20,6 +20,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { getUserInfoAPI, updateUserAvatarAPI } from '@/api'
+import { useTokenStore } from '@/stores'
+import { ElMessage } from 'element-plus'
+
+const tokenStore = useTokenStore()
 // 图片对象
 const avatar = ref('')
 // 标签对象
@@ -39,7 +44,7 @@ const onFileChange = (e) => { // e 原生事件对象
         // img的src只能是链接地址或者相对路径地址
         // 或者是图片的base64字符串（而且字符串还必须是data:image/png;base64，图片转base64字符串）
         // 后端要求传过去的值为dataURL
-        
+
         // 解决方法1： 文件 -> 内存临时地址（这个地址只能在js的内存中，不能发给后台）
         // 语法：URL.createObjectURL(文件)
         // 返回值：内存临时地址
@@ -55,6 +60,26 @@ const onFileChange = (e) => { // e 原生事件对象
             // 将结果赋值给avatar
             avatar.value = e.target.result
         }
+    }
+}
+// 上传头像
+const upload = async () => {
+    const { data: res } = await updateUserAvatarAPI(avatar.value)
+    // 更新头像成功
+    if(res.status === 0) {
+        ElMessage({
+            message: '更新头像成功！',
+            type: 'success'
+        })
+        // 调用查询接口获取最新的用户信息
+        const { data: result } = await getUserInfoAPI()
+        // 将pinia中的用户信息更新
+        tokenStore.updateUserInfo(result.data)
+    }else {
+        ElMessage({
+            message: '更新头像失败！',
+            type: 'error'
+        })
     }
 }
 </script>

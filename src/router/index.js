@@ -23,6 +23,11 @@ const router = createRouter({
           path: 'avatar',
           name: 'avatar',
           component: () => import('@/views/User/UserAvatar.vue')
+        },
+        {
+          path: 'resetpwd',
+          name: 'resetpwd',
+          component: () => import('@/views/User/UserPwd.vue')
         }
       ]
     },

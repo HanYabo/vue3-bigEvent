@@ -46,3 +46,14 @@ export const updateUserInfoAPI = ({ id, nickname, email }) => {
     })
 }
 
+// 更新用户头像接口
+export const updateUserAvatarAPI = (avatar) => {
+    return request({
+        url: '/self/update/avatar',
+        method: 'POST',
+        data: {
+            avatar: avatar, // base64字符串
+        }
+    })
+}
+

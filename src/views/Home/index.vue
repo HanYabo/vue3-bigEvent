@@ -55,6 +55,7 @@
 <script setup>
 import * as echarts from 'echarts'
 import { ref } from 'vue'
+
 const aList_all = ref([
     { 'count': 36, 'date': '2019-04-13' },
     { 'count': 52, 'date': '2019-04-14' },
