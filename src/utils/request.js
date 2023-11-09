@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { useTokenStore } from '../stores'
+import { ElMessage } from 'element-plus'
+import router from '@/router'
 const tokenStore = useTokenStore()
 const instance = axios.create({
     baseURL: 'http://127.0.0.1:8080'
@@ -21,5 +23,25 @@ instance.interceptors.request.use((config) => {
     return Promise.reject(error)
 })
 
-// 
+// 响应拦截器
+instance.interceptors.response.use((response) => {
+    // 成功回调
+    return response
+},(error) => {
+    // 响应状态码为4xx, 5xx 时触发失败回调
+    if(error.response.status === 401) {
+        // token过期
+        // 清除仓库数据
+        tokenStore.updateToken('')
+        tokenStore.updateUserInfo({})
+        // 跳转登录页面
+        ElMessage({
+            message: '登录过期,请重新登录！',
+            type: 'info',
+            duration: 2000
+        })
+        router.push('/login')
+    }
+    return Promise.reject(error)
+})
 export default instance

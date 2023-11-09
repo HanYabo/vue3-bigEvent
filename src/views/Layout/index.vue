@@ -34,8 +34,9 @@
             <el-aside width="200px">
                 <!-- 侧边栏用户信息区 -->
                 <div class="user-box">
-                    <img :src="tokenStore.userinfo.user_pic" alt="">
-                    <span>欢迎{{ tokenStore.userinfo.nickname || tokenStore.userinfo.username }}</span>
+                    <img v-if="tokenStore.getUserPic" :src="tokenStore.getUserPic" alt="">
+                    <img src="../../assets/images/logo.png" alt="" v-else>
+                    <span>欢迎{{ tokenStore.getNickname || tokenStore.getUsername}}</span>
                 </div>
                 <!-- 侧边栏导航区 -->
                 <el-menu active-text-color="#ffd04b" background-color="#393d49" class="el-menu-vertical-demo"
@@ -113,8 +114,8 @@ const handleClose = (key, keyPath) => {
     console.log(key, keyPath)
 }
 
-// 当页面挂载完成时，读取用户信息，并存入到仓库中
 onMounted(async () => {
+    // 当token存在时，再请求获取用户信息
     const { data: res } = await getUserInfoAPI()
     tokenStore.updateUserInfo(res.data)
 })

@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 import { useTokenStore } from '@/stores'
-const tokenStore = useTokenStore()
 
 // 登录用户接口
 export const loginAPI = ({ username, password }) => {

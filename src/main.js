@@ -23,7 +23,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 app.use(ElementPlus)
 app.component('Echarts', Echarts)
-app.use(pinia)
 app.use(router)
+app.use(pinia)
+
 
 app.mount('#app')
