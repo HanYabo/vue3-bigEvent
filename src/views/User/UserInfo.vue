@@ -25,30 +25,55 @@
 <script setup>
 import { ref } from 'vue'
 import { useTokenStore } from '@/stores'
-const tokenSTore = useTokenStore()
+import { getUserInfoAPI, updateUserInfoAPI } from '@/api'
+import { ElMessage } from 'element-plus';
+const tokenStore = useTokenStore()
 const userForm = ref({
-    username: tokenSTore.getUsername,
-    password: '',
+    username: tokenStore.getUsername,
+    nickname: '',
     email: ''
 })
+const userFormRef = ref(null)
 // 校验规则
 const userFormRules = ref({
     nickname: [
-        { required: true, message: '请输入用户昵称', trigger: 'blur'},
+        { required: true, message: '请输入用户昵称', trigger: 'blur' },
         // 正则匹配1-10位非空字符串
-        { pattern: /^\S{1,10}$/, message: '昵称必须是1-10位非空字符串', trigger: 'blur'}
+        { pattern: /^\S{1,10}$/, message: '昵称必须是1-10位非空字符串', trigger: 'blur' }
     ],
     email: [
-        { required: true, message: '请输入用户邮箱', trigger: 'blur'},
+        { required: true, message: '请输入用户邮箱', trigger: 'blur' },
         { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
     ]
 })
 
 const submit = () => {
     // 校验表单数据是否合法
-    userFormRef.value.validate(valid => {
-        if(valid) {
-            
+    userFormRef.value.validate(async valid => {
+        if (valid) {
+            // 验证成功
+            // 调用更新接口
+            // 更新接口需要传id，从tokenStore中读取用户的id，添加到userForm中
+            userForm.value.id = tokenStore.userinfo.id
+            const { data: res } = await updateUserInfoAPI(userForm.value)
+            // 成功提示
+            if (res.status === 0) {
+                ElMessage({
+                    message: '更新用户信息成功！',
+                    type: 'success'
+                })
+            } else {
+                ElMessage({
+                    message: '更新用户信息失败！',
+                    type: 'error'
+                })
+            }
+            // 获取更新后的用户信息，将新信息存入到pinia中
+            const { data: result } = await getUserInfoAPI()
+            tokenStore.updateUserInfo(result.data)
+        } else {
+            // 校验失败 拒绝表单请求
+            return false
         }
     })
 }

@@ -14,13 +14,13 @@ export const loginAPI = ({ username, password }) => {
 }
 
 // 注册用户接口
-export const registerAPI = (form) => {
+export const registerAPI = ({ username, password }) => {
     return request({
         url: '/api/register',
         method: 'POST',
         data: {
-            username: form.username,
-            password: form.password
+            username: username,
+            password: password
         }
     })
 }
@@ -30,6 +30,19 @@ export const getUserInfoAPI = () => {
     return request({
         url: '/self/userinfo',
         method: 'GET',
+    })
+}
+
+// 更新用户信息接口
+export const updateUserInfoAPI = ({ id, nickname, email }) => {
+    return request({
+        url: '/self/userinfo',
+        method: 'POST',
+        data: {
+            id: id,
+            nickname: nickname,
+            email: email,
+        }
     })
 }
 

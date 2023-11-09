@@ -10,7 +10,7 @@ export const useTokenStore = defineStore('tokenStore', {
     getters: {
         getUsername: state => state.userinfo.username,
         getNickname: state => state.userinfo.nickname,
-        getUserPic: state => state.userinfo.userpic,
+        getUserPic: state => state.userinfo.user_pic,
     },
     actions: {
         // 保存token

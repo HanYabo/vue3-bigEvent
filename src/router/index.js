@@ -37,7 +37,7 @@ const router = createRouter({
 // 不允许绕过/login登录页面,要确认token存在才放行
 router.beforeEach((to, from, next) => {
   const tokenStore = useTokenStore()
-  if (to.path === '/login') {
+  if (to.path === '/login' || to.path === '/register') {
     next()
   } else {
     if (tokenStore.token) {

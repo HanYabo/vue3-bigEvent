@@ -118,7 +118,6 @@ onMounted(async () => {
     // 当token存在时，再请求获取用户信息
     const { data: res } = await getUserInfoAPI()
     tokenStore.updateUserInfo(res.data)
-    console.log(route.path)
 })
 
 const quit = () => {
