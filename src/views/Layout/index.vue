@@ -40,6 +40,7 @@
                     <span>欢迎{{ tokenStore.getNickname || tokenStore.getUsername }}</span>
                 </div>
                 <!-- 侧边栏导航区 -->
+                <!-- TODO 导航激活和路由匹配 -->
                 <el-menu active-text-color="#ffd04b" background-color="#393d49" class="el-menu-vertical-demo"
                     default-active="home" text-color="#fff" @open="handleOpen" @close="handleClose" unique-opened router>
                     <el-menu-item index="home">

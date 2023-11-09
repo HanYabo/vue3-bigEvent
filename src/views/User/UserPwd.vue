@@ -16,8 +16,8 @@
                 <el-input v-model="pwdForm.rePwd" type="password"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary">修改密码</el-button>
-                <el-button>重置</el-button>
+                <el-button type="primary" @click="resetPwd()">修改密码</el-button>
+                <el-button @click="reset">重置</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -25,6 +25,14 @@
 
 <script setup>
 import { ref } from 'vue'
+import { resetPasswordAPI } from '@/api'
+import { ElMessage } from 'element-plus'
+import { useTokenStore } from '@/stores'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const tokenStore = useTokenStore()
 
 const pwdForm = ref({
     oldPwd: '',
@@ -48,6 +56,37 @@ const repeatPwd = (rule, value, callback) => {
     }else {
         callback()
     }
+}
+
+// 重置密码
+const resetPwd = () => {
+    pwdFormRef.value.validate(async valid => {
+        if(valid) {
+            const { data: res } = await resetPasswordAPI(pwdForm.value)
+            if(res.status === 0) {
+                ElMessage({
+                    message: '更新密码成功！',
+                    type: 'success'
+                })
+                pwdFormRef.value.resetFields()
+                // 重置密码
+                tokenStore.updateToken('')
+                tokenStore.updateUserInfo({})
+                router.push('/login')
+            }else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        }else {
+            return false // 表单拒绝提交
+        }
+    })
+}
+
+const reset = () => {
+    pwdFormRef.value.resetFields()
 }
 
 // 标签对象

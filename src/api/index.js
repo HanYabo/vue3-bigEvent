@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { useTokenStore } from '@/stores'
 
 // 登录用户接口
 export const loginAPI = ({ username, password }) => {
@@ -53,6 +52,18 @@ export const updateUserAvatarAPI = (avatar) => {
         method: 'POST',
         data: {
             avatar: avatar, // base64字符串
+        }
+    })
+}
+
+// 重置密码接口
+export const resetPasswordAPI = ({ oldPwd, newPwd }) => {
+    return request({
+        url: '/self/resetpwd',
+        method: 'POST',
+        data: {
+            oldPwd: oldPwd,
+            newPwd: newPwd
         }
     })
 }
