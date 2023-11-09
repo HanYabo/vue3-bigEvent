@@ -16,7 +16,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submit">提交修改</el-button>
-                <el-button>重置</el-button>
+                <el-button @click="reset">重置</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -46,7 +46,7 @@ const userFormRules = ref({
         { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
     ]
 })
-
+// 修改资料提交
 const submit = () => {
     // 校验表单数据是否合法
     userFormRef.value.validate(async valid => {
@@ -76,6 +76,11 @@ const submit = () => {
             return false
         }
     })
+}
+// 重置
+const reset = () => {
+    // 清空表单（调用element-plus的resetFields方法）
+    userFormRef.value.resetFields()
 }
 </script>
 
