@@ -2,6 +2,7 @@
     <el-card class="box-card">
         <div slot="header" class="clearfix">
             <span>基本资料</span>
+            <el-divider />
         </div>
         <!-- 表单 -->
         <el-form :model="userForm" :rules="userFormRules" ref="userFormRef" label-width="100px">

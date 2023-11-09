@@ -2,6 +2,7 @@
     <el-card class="box-card">
         <div slot="header" class="clearfix">
             <span>重置密码</span>
+            <el-divider />
         </div>
         <!-- 表单 -->
         <el-form :model="pwdForm" :rules="pwdFormRules" ref="pwdFormRef" label-width="100px">
@@ -35,18 +36,17 @@ const pwdFormRef = ref(null)
 // 规则对象
 const pwdFormRules = ref({
     oldPwd: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
-        { pattern: /^\S{6,12}$/, message: '密码长度必须是6-12位的非空字符串', trigger: 'blur' }
+        { required: true, message: '请输入原密码', trigger: 'blur'},
+        { pattern: /^\S{6,12}$/, message: '密码长度必须是6-15位的非空字符串', trigger: 'blur'}
     ],
     newPwd: [
-        { required: true, message: '请输入新密码', trigger: 'blur' },
-        { pattern: /^\S{6,12}$/, message: '密码长度必须是6-12位的非空字符串', trigger: 'blur' },
-        { validator: samePwd, trigger: 'blur' }
+        { required: true, message: '请输入新密码', trigger: 'blur'},
+        { pattern: /^\S{6,12}$/, message: '密码长度必须是6-12位的非空字符串', trigger: 'blur'}
     ],
     rePwd: [
-        { required: true, message: '请再次确认新密码', trigger: 'blur' },
-        { pattern: /^\S{6,12}$/, message: '密码长度' }
-    ],
+        { required: true, message: '请再次输入新密码', trigger: 'blur'},
+        { pattern: /^\S{6,12}$/, message: '密码长度必须是6-12位的非空字符串', trigger: 'blur'}
+    ]
 })
 </script>
 
