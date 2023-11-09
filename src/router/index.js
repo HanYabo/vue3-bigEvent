@@ -6,7 +6,14 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      component: () => import('@/views/layout/index.vue'),
+      redirect: '/home',
+      children: [
+        {
+          path: 'home',
+          component: () => import('@/views/Home/index.vue')
+        }
+      ]
     },
     {
       path: '/login',
@@ -16,10 +23,6 @@ const router = createRouter({
       path: '/register',
       component: () => import('@/views/Register/index.vue')
     },
-    {
-      path: '/layout',
-      component: () => import('@/views/layout/index.vue')
-    }
   ]
 })
 

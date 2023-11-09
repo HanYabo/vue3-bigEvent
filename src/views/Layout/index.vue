@@ -40,8 +40,8 @@
                 </div>
                 <!-- 侧边栏导航区 -->
                 <el-menu active-text-color="#ffd04b" background-color="#393d49" class="el-menu-vertical-demo"
-                    default-active="1" text-color="#fff" @open="handleOpen" @close="handleClose" unique-opened>
-                    <el-menu-item index="1">
+                    default-active="home" text-color="#fff" @open="handleOpen" @close="handleClose" unique-opened :router="router">
+                    <el-menu-item index="home">
                         <el-icon>
                             <House />
                         </el-icon>
@@ -90,7 +90,7 @@
             <el-container>
                 <!-- 页面主体区域 -->
                 <el-main>
-                    Main
+                    <RouterView></RouterView>
                 </el-main>
                 <!-- 底部 footer 区域 -->
                 <el-footer>© www.hikari.com MuY1eee</el-footer>
