@@ -99,3 +99,16 @@ export const deleteArticleCateByIdAPI = ({ id }) => {
     })
 }
 
+// 更新文章分类接口
+export const updateArticleCateByIdAPI = ({ id, name, alias }) => {
+    return request({
+        url: '/self/article/updatecate',
+        method: 'POST',
+        data: {
+            id: id,
+            name: name,
+            alias: alias
+        }
+    })
+}
+

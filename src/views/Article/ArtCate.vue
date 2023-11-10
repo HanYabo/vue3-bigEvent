@@ -3,7 +3,7 @@
         <el-card class="box-card">
             <div slot="header" class="clearfix header-box">
                 <span>文章分类</span>
-                <el-button type="primary" size="default" @click="centerDialogVisible = true">添加分类</el-button>
+                <el-button type="primary" size="default" @click="showDialog">添加分类</el-button>
             </div>
             <el-divider></el-divider>
             <el-table :data="cateList" style="width: 100%" border stripe>
@@ -20,7 +20,7 @@
         </el-card>
 
         <!-- 添加文章分类对话框 -->
-        <el-dialog title="新增分类" v-model="centerDialogVisible" width="30%" @close="closeDialog">
+        <el-dialog :title="title" v-model="centerDialogVisible" width="30%" @close="closeDialog">
             <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" label-width="80px">
                 <el-form-item label="分类名称" prop="name">
                     <el-input v-model="addForm.name" minlength="1" maxlength="10"></el-input>
@@ -41,12 +41,21 @@
   
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getArticleCatesAPI, addArticleCateAPI, deleteArticleCateByIdAPI } from '@/api'
+import { getArticleCatesAPI, addArticleCateAPI, deleteArticleCateByIdAPI, updateArticleCateByIdAPI } from '@/api'
 import { ElMessage } from 'element-plus'
 
 const cateList = ref([])
 
 const centerDialogVisible = ref(false)
+
+// 标题对象
+const title = ref('')
+
+// 点击添加分类按钮回调函数showDialog
+const showDialog = () => {
+    title.value = '新增分类',
+    centerDialogVisible.value = true
+}
 
 // 新增文章分类对象
 const addForm = ref({
@@ -103,7 +112,11 @@ const addArticleCate = () => {
 
 // 修改文章分类
 const editArticleCate = (val) => {
-    console.log(val)
+    title.value = '修改分类'
+    centerDialogVisible.value = true
+    // 数据回显
+    addForm.value.name = val.name
+    addForm.value.alias = val.alias
 }
 
 // 删除文章分类
