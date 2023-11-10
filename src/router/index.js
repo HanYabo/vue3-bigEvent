@@ -28,6 +28,11 @@ const router = createRouter({
           path: 'resetpwd',
           name: 'resetpwd',
           component: () => import('@/views/User/UserPwd.vue')
+        },
+        {
+          path: 'artcate',
+          name: 'artcate',
+          component: () => import('@/views/Article/ArtCate.vue')
         }
       ]
     },

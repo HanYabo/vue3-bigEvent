@@ -68,3 +68,11 @@ export const resetPasswordAPI = ({ oldPwd, newPwd }) => {
     })
 }
 
+// 获取文章分类接口
+export const getArticleCatesAPI = () => {
+    return request({
+        url: '/self/article/cates',
+        method: 'GET'
+    })
+}
+

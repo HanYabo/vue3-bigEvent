@@ -29,6 +29,7 @@
             </el-row>
         </div>
 
+        <!-- TODO echarts不随窗口大小重新渲染问题 -->
         <div class="container-fluid">
             <el-row class="curve-pie" :gutter="10">
                 <el-col :sm="16" :xs="16">

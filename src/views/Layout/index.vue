@@ -56,13 +56,13 @@
                             </el-icon>
                             <span>文章管理</span>
                         </template>
-                        <el-menu-item index="2.1">
+                        <el-menu-item index="artcate">
                             <el-icon>
                                 <Management />
                             </el-icon>
                             <span>文章分类</span>
                         </el-menu-item>
-                        <el-menu-item index="2.2">
+                        <el-menu-item index="#">
                             <el-icon>
                                 <Document />
                             </el-icon>
