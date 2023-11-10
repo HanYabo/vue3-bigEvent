@@ -12,8 +12,8 @@
                 <el-table-column prop="alias" label="分类别名"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="scope">
-                        <el-button type="primary" size="small">修改</el-button>
-                        <el-button type="danger" size="small">删除</el-button>
+                        <el-button type="primary" size="small" @click="editArticleCate(scope.row)">修改</el-button>
+                        <el-button type="danger" size="small" @click="deleteArticleCate(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -41,7 +41,7 @@
   
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getArticleCatesAPI, addArticleCateAPI } from '@/api'
+import { getArticleCatesAPI, addArticleCateAPI, deleteArticleCateByIdAPI } from '@/api'
 import { ElMessage } from 'element-plus'
 
 const cateList = ref([])
@@ -104,6 +104,25 @@ const addArticleCate = () => {
 // 修改文章分类
 const editArticleCate = (val) => {
     console.log(val)
+}
+
+// 删除文章分类
+const deleteArticleCate = async (item) => {
+    const { data: res } = await deleteArticleCateByIdAPI(item)
+    if(res.status === 0) {
+        ElMessage({
+            message: '删除文章分类成功！',
+            type: 'success'
+        })
+        // 删除成功后，调用接口获取最新文章分类
+        await getArticleCates()
+    }else {
+        ElMessage({
+            message: res.message,
+            type: 'error'
+        })
+    }
+    
 }
 
 // 关闭对话框

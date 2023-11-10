@@ -88,3 +88,14 @@ export const addArticleCateAPI = ({ name, alias }) => {
     })
 } 
 
+// 删除文章分类接口
+export const deleteArticleCateByIdAPI = ({ id }) => {
+    return request({
+        url: `/self/article/deletecate/${id}`,
+        method: 'GET',
+        params: {
+            id: id
+        }
+    })
+}
+
