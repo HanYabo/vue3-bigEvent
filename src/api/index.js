@@ -71,7 +71,7 @@ export const resetPasswordAPI = ({ oldPwd, newPwd }) => {
 // 获取文章分类接口
 export const getArticleCatesAPI = () => {
     return request({
-        url: '/self/article/cates',
+        url: '/self/artcate/cates',
         method: 'GET'
     })
 }
@@ -79,7 +79,7 @@ export const getArticleCatesAPI = () => {
 // 新增文章分类接口
 export const addArticleCateAPI = ({ name, alias }) => {
     return request({
-        url: '/self/article/addcate',
+        url: '/self/artcate/addcate',
         method: 'POST',
         data: {
             name: name,
@@ -91,7 +91,7 @@ export const addArticleCateAPI = ({ name, alias }) => {
 // 删除文章分类接口
 export const deleteArticleCateByIdAPI = ({ id }) => {
     return request({
-        url: `/self/article/deletecate/${id}`,
+        url: `/self/artcate/deletecate/${id}`,
         method: 'GET',
         params: {
             id: id
@@ -102,7 +102,7 @@ export const deleteArticleCateByIdAPI = ({ id }) => {
 // 更新文章分类接口
 export const updateArticleCateByIdAPI = ({ id, name, alias }) => {
     return request({
-        url: '/self/article/updatecate',
+        url: '/self/artcate/updatecate',
         method: 'POST',
         data: {
             id: id,

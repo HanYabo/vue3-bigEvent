@@ -33,6 +33,11 @@ const router = createRouter({
           path: 'artcate',
           name: 'artcate',
           component: () => import('@/views/Article/ArtCate.vue')
+        },
+        {
+          path: 'artlist',
+          name: 'artlist',
+          component: () => import('@/views/Article/ArtList.vue')
         }
       ]
     },

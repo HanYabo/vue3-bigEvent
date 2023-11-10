@@ -62,7 +62,7 @@
                             </el-icon>
                             <span>文章分类</span>
                         </el-menu-item>
-                        <el-menu-item index="#">
+                        <el-menu-item index="artlist">
                             <el-icon>
                                 <Document />
                             </el-icon>
