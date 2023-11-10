@@ -72,6 +72,7 @@ const submit = () => {
             // 获取更新后的用户信息，将新信息存入到pinia中
             const { data: result } = await getUserInfoAPI()
             tokenStore.updateUserInfo(result.data)
+            userFormRef.value.resetFields()
         } else {
             // 校验失败 拒绝表单请求
             return false

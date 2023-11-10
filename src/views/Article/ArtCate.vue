@@ -12,7 +12,7 @@
                 <el-table-column prop="alias" label="分类别名"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="scope">
-                        <el-button type="primary" size="small" @click="editArticleCate(scope.row)">修改</el-button>
+                        <el-button type="primary" size="small">修改</el-button>
                         <el-button type="danger" size="small">删除</el-button>
                     </template>
                 </el-table-column>
@@ -21,7 +21,7 @@
 
         <!-- 添加文章分类对话框 -->
         <el-dialog title="新增分类" v-model="centerDialogVisible" width="30%" @close="closeDialog">
-            <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="80px">
+            <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" label-width="80px">
                 <el-form-item label="分类名称" prop="name">
                     <el-input v-model="addForm.name" minlength="1" maxlength="10"></el-input>
                 </el-form-item>
@@ -42,7 +42,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getArticleCatesAPI, addArticleCateAPI } from '@/api'
-import { ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus'
 
 const cateList = ref([])
 
@@ -78,14 +78,14 @@ const getArticleCates = async () => {
 // 添加文章分类
 const addArticleCate = () => {
     addFormRef.value.validate(async valid => {
-        if (valid) {
+        if(valid) {
+            // 校验成功，调用接口
             const { data: res } = await addArticleCateAPI(addForm.value)
-            if (res.status === 0) {
+            if(res.status === 0) {
                 ElMessage({
                     message: '新增文章分类成功！',
-                    type: 'success'
+                    type:'success'
                 })
-                // 获取最新的文章分类列表
                 await getArticleCates()
             }else {
                 ElMessage({
@@ -93,11 +93,12 @@ const addArticleCate = () => {
                     type: 'error'
                 })
             }
-        } else {
+        }else {
             return false
         }
+        // 不要写在validate外面，不然会引起@close事件，从而导致form清空，导致进不去validate
+        centerDialogVisible.value = false
     })
-    centerDialogVisible.value = false
 }
 
 // 修改文章分类
