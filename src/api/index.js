@@ -76,3 +76,15 @@ export const getArticleCatesAPI = () => {
     })
 }
 
+// 新增文章分类接口
+export const addArticleCateAPI = ({ name, alias }) => {
+    return request({
+        url: '/self/article/addcate',
+        method: 'POST',
+        data: {
+            name: name,
+            alias: alias
+        }
+    })
+} 
+

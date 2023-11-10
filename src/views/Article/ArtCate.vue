@@ -41,7 +41,8 @@
   
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getArticleCatesAPI } from '@/api'
+import { getArticleCatesAPI, addArticleCateAPI } from '@/api'
+import { ElMessage } from 'element-plus';
 
 const cateList = ref([])
 
@@ -50,8 +51,7 @@ const centerDialogVisible = ref(false)
 // 新增文章分类对象
 const addForm = ref({
     name: '',
-    alias: '',
-    is_delete: 0
+    alias: ''
 })
 
 // 标签对象
@@ -77,7 +77,26 @@ const getArticleCates = async () => {
 
 // 添加文章分类
 const addArticleCate = () => {
-    console.log('ok')
+    addFormRef.value.validate(async valid => {
+        if (valid) {
+            const { data: res } = await addArticleCateAPI(addForm.value)
+            if (res.status === 0) {
+                ElMessage({
+                    message: '新增文章分类成功！',
+                    type: 'success'
+                })
+                // 获取最新的文章分类列表
+                await getArticleCates()
+            }else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        } else {
+            return false
+        }
+    })
     centerDialogVisible.value = false
 }
 
