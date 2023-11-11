@@ -10,7 +10,8 @@
                 <el-form :inline="true">
                     <el-form-item label="文章分类">
                         <el-select placeholder="请选择分类" size="small">
-                            <el-option v-for="item in cateList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                            <el-option v-for="item in cateList" :key="item.id" :label="item.name"
+                                :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="发布状态" style="margin-left: 15px">
@@ -66,20 +67,9 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="文章内容" prop="content">
-                    <quill-editor class="ql-editor"></quill-editor>
-                </el-form-item>
-                <el-form-item label="文章封面" prop="cover_img">
-                    <!-- 用来显示封面的图片 -->
-                    <img src="../../assets/images/cover.jpg" alt="" class="cover-img" ref="" />
-                    <br />
-                    <!-- 文件选择框，默认被隐藏 -->
-                    <input type="file" style="display: none;" accept="image/*" ref="" />
-                    <!-- 选择封面的按钮 -->
-                    <el-button type="text">+ 选择封面</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary">发布</el-button>
-                    <el-button type="info">存为草稿</el-button>
+                    <!-- TODO 富文本处理器 -->
+                    <richTextEditor v-model="pubForm.content"
+                        :toolBarConfig="toolBarConfig"></richTextEditor>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -97,13 +87,30 @@ const query = ref({
     cate_id: '',
     state: ''
 })
+const toolBarConfig = ref([
+    ['bold', 'italic', 'underline', 'strike'],
+    ['blockquote', 'code-block'],
+    [{ header: 1 }, { header: 2 }],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ script: 'sub' }, { script: 'super' }],
+    [{ indent: '-1' }, { indent: '+1' }],
+    [{ direction: 'rtl' }],
+    [{ size: ['small', false, 'large', 'huge'] }],
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    [{ color: [] }, { background: [] }],
+    [{ font: [] }],
+    [{ align: [] }],
+    ['clean'],
+    ['link', 'image', 'video']
+])
 
 const pubDialogVisible = ref(false)  // 控制发表文章的 Dialog 对话框是否显示
 
 // 发表文章的表单对象
 const pubForm = ref({
     title: '',
-    cate_id: ''
+    cate_id: '',
+    content: ''
 })
 
 // 发表文章的表单验证规则对象
@@ -114,6 +121,9 @@ const pubFormRules = ref({
     ],
     cate_id: [
         { required: true, message: '请选择文章标题', trigger: 'blur' },
+    ],
+    content: [
+        { required: true, message: '请输入文章内容', trigger: 'blur' }
     ]
 })
 
@@ -163,7 +173,12 @@ onMounted(() => {
     }
 }
 
-::v-deep .ql-editor {
+// 样式穿透
+:deep(.ql-toolbar) {
+    width: 100%;
+}
+:deep(.ql-container) {
+    width: 100%;
     min-height: 300px;
 }
 
@@ -194,7 +209,7 @@ onMounted(() => {
 }
 
 // 修改 dialog 内部元素的样式，需要添加样式穿透
-::v-deep .detail-box {
+:deep(.detail-box) {
     img {
         width: 500px;
     }
