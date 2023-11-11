@@ -71,6 +71,12 @@
                     <richTextEditor v-model="pubForm.content"
                         :toolBarConfig="toolBarConfig"></richTextEditor>
                 </el-form-item>
+                <el-form-item label="文章封面">
+                    <img src="../../assets/images/cover.jpg" alt="" class="cover-img" ref="imgRef" />
+                    <!-- 文件选择框 默认被隐藏 -->
+                    <input type="file" style="display: none;" accept="image/*" ref="iptFileRef" />
+                    <el-button type="text" @click="selectCover">+ 选择封面</el-button>   
+                </el-form-item>
             </el-form>
         </el-dialog>
     </div>
@@ -80,6 +86,7 @@
 import { ElMessageBox } from 'element-plus'
 import { ref, onMounted } from 'vue'
 import { getArticleCatesAPI } from '@/api'
+
 // 查询参数对象
 const query = ref({
     pageNum: 1,
@@ -87,6 +94,7 @@ const query = ref({
     cate_id: '',
     state: ''
 })
+// quill-editor配置项
 const toolBarConfig = ref([
     ['bold', 'italic', 'underline', 'strike'],
     ['blockquote', 'code-block'],
@@ -130,6 +138,8 @@ const pubFormRules = ref({
 // 分类列表对象
 const cateList = ref([])
 
+const iptFileRef = ref(null)
+
 // 发表文章按钮点击事件
 const showPubDialog = () => {
     pubDialogVisible.value = true
@@ -157,6 +167,11 @@ const getArticleCates = async () => {
     const { data: res } = await getArticleCatesAPI()
     cateList.value = res.data
 }
+
+// 选择封面点击事件
+const selectCover = () => {
+    iptFileRef.value.click() // 用js模拟一次点击事件动作
+}
 onMounted(() => {
     getArticleCates()
 })
@@ -177,9 +192,10 @@ onMounted(() => {
 :deep(.ql-toolbar) {
     width: 100%;
 }
+
 :deep(.ql-container) {
     width: 100%;
-    min-height: 300px;
+    height: 400px;
 }
 
 .cover-img {

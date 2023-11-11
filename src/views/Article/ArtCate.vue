@@ -92,7 +92,6 @@ const editCateShowDialogBtn = (val) => {
     centerDialogVisible.value = true
     // 数据回显
     // 先点击修改，再点击添加分类，会产生添加分类中有数据回显的问题。这样的问题是因为el-dialog的懒渲染引起，数据被重置了，但是DOM没来得及渲染，导致DOM渲染的时候，数据又被赋值在表单中。
-    // 因为数据更新是异步，DOM渲染是同步，异步先执行，所以回显的值会出现在el-dialog中。
     // 所以可以使用nextTick()这一函数来解决数据更新和DOM渲染不一致的问题。
     // 等待下一次DOM渲染这个时机我们要执行的操作。
     nextTick(() => {
