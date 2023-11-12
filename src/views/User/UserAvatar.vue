@@ -2,6 +2,7 @@
     <el-card class="box-card">
         <div slot="header" class="clearfix">
             <span>更换头像</span>
+            <el-divider></el-divider>
         </div>
         <div>
             <!-- 图片，用来展示用户选择的头像 -->

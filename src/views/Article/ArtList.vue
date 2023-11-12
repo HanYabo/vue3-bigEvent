@@ -73,9 +73,10 @@
                 </el-form-item>
                 <el-form-item label="文章封面">
                     <img src="../../assets/images/cover.jpg" alt="" class="cover-img" ref="imgRef" />
+                    <br>
                     <!-- 文件选择框 默认被隐藏 -->
-                    <input type="file" style="display: none;" accept="image/*" ref="iptFileRef" />
-                    <el-button type="text" @click="selectCover">+ 选择封面</el-button>   
+                    <input type="file" style="display: none;" accept="image/*" ref="iptFileRef" @change="changeCover($event)"/>
+                    <el-link @click="selectCover">+ 选择封面</el-link>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -83,6 +84,8 @@
 </template>
   
 <script setup>
+// webpack会把图片变为一个base64字符串/在打包后的图片临时地址
+import imgObj from '../../assets/images/cover.jpg'
 import { ElMessageBox } from 'element-plus'
 import { ref, onMounted } from 'vue'
 import { getArticleCatesAPI } from '@/api'
@@ -118,7 +121,8 @@ const pubDialogVisible = ref(false)  // 控制发表文章的 Dialog 对话框�
 const pubForm = ref({
     title: '',
     cate_id: '',
-    content: ''
+    content: '',
+    cover_img: ''
 })
 
 // 发表文章的表单验证规则对象
@@ -139,6 +143,8 @@ const pubFormRules = ref({
 const cateList = ref([])
 
 const iptFileRef = ref(null)
+
+const imgRef = ref(null)
 
 // 发表文章按钮点击事件
 const showPubDialog = () => {
@@ -171,6 +177,23 @@ const getArticleCates = async () => {
 // 选择封面点击事件
 const selectCover = () => {
     iptFileRef.value.click() // 用js模拟一次点击事件动作
+}
+
+// 选择封面文件
+const changeCover = (e) => {
+    const files = e.target.files
+    if(files.length === 0) {
+        // 用户没有选择图片，拿到选择的文件数组
+        pubForm.value.cover_img = null
+        // img要显示回默认的cover_img
+        imgRef.value.setAttribute('src', imgObj)
+    }else {
+        // 用户选择图片，把文件直接保存到表单对象的属性中
+        pubForm.value.cover_img = files[0]
+        // 将图片文件，显示到img标签中
+        const url = URL.createObjectURL(files[0])
+        imgRef.value.setAttribute('src', url)
+    }
 }
 onMounted(() => {
     getArticleCates()
