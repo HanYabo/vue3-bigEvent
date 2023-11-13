@@ -62,15 +62,15 @@
                     <el-input v-model="pubForm.title" placeholder="请输入标题"></el-input>
                 </el-form-item>
                 <el-form-item label="文章分类" prop="cate_id">
-                    <el-select placeholder="请选择分类" style="width: 100%">
+                    <el-select placeholder="请选择分类" style="width: 100%" v-model="pubForm.cate_id">
                         <el-option v-for="item in cateList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="文章内容" prop="content">
-                    <!-- TODO 富文本处理器 -->
+                    <!-- 富文本处理器 -->
                     <richTextEditor v-model="pubForm.content" :toolBarConfig="toolBarConfig"></richTextEditor>
                 </el-form-item>
-                <el-form-item label="文章封面">
+                <el-form-item label="文章封面" prop="cover_img">
                     <img src="../../assets/images/cover.jpg" alt="" class="cover-img" ref="imgRef" />
                     <!-- 文件选择框 默认被隐藏 -->
                     <input type="file" style="display: none;" accept="image/*" ref="iptFileRef"
@@ -205,7 +205,17 @@ const changeCover = (e) => {
 // 表单中发布/（存为草稿）
 const pubArticle = (str) => {
     pubForm.value.state = str // 保存到表单对象中
-    
+
+    // 校验
+    pubForm.value.validate(async valid => {
+        if(valid) {
+            // 通过
+            console.log(pubForm.value)
+        }else {
+            return false
+        }
+    })
+
 }
 onMounted(() => {
     getArticleCates()
