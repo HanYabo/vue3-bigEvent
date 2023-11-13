@@ -21,12 +21,12 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" size="small">筛选</el-button>
-                        <el-button type="info" size="small">重置</el-button>
+                        <el-button type="primary">筛选</el-button>
+                        <el-button type="info">重置</el-button>
                     </el-form-item>
                 </el-form>
                 <!-- 发表文章的按钮 -->
-                <el-button type="primary" size="small" class="btn-pub" @click="showPubDialog">发表文章</el-button>
+                <el-button type="primary" @click="showPubDialog">发表文章</el-button>
             </div>
 
             <!-- 文章表格区域 -->
@@ -68,15 +68,19 @@
                 </el-form-item>
                 <el-form-item label="文章内容" prop="content">
                     <!-- TODO 富文本处理器 -->
-                    <richTextEditor v-model="pubForm.content"
-                        :toolBarConfig="toolBarConfig"></richTextEditor>
+                    <richTextEditor v-model="pubForm.content" :toolBarConfig="toolBarConfig"></richTextEditor>
                 </el-form-item>
                 <el-form-item label="文章封面">
                     <img src="../../assets/images/cover.jpg" alt="" class="cover-img" ref="imgRef" />
-                    <br>
                     <!-- 文件选择框 默认被隐藏 -->
-                    <input type="file" style="display: none;" accept="image/*" ref="iptFileRef" @change="changeCover($event)"/>
-                    <el-link @click="selectCover">+ 选择封面</el-link>
+                    <input type="file" style="display: none;" accept="image/*" ref="iptFileRef"
+                        @change="changeCover($event)" />
+                        <el-divider style="border-style: hidden; margin: 0"></el-divider>
+                    <el-button type="text" @click="selectCover">+ 选择封面</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="pubArticle('已发布')">发布</el-button>
+                    <el-button type="info" @click="pubArticle('草稿')">保存草稿</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -97,6 +101,7 @@ const query = ref({
     cate_id: '',
     state: ''
 })
+
 // quill-editor配置项
 const toolBarConfig = ref([
     ['bold', 'italic', 'underline', 'strike'],
@@ -122,7 +127,8 @@ const pubForm = ref({
     title: '',
     cate_id: '',
     content: '',
-    cover_img: ''
+    cover_img: '',
+    state: ''
 })
 
 // 发表文章的表单验证规则对象
@@ -182,18 +188,24 @@ const selectCover = () => {
 // 选择封面文件
 const changeCover = (e) => {
     const files = e.target.files
-    if(files.length === 0) {
+    if (files.length === 0) {
         // 用户没有选择图片，拿到选择的文件数组
         pubForm.value.cover_img = null
         // img要显示回默认的cover_img
         imgRef.value.setAttribute('src', imgObj)
-    }else {
+    } else {
         // 用户选择图片，把文件直接保存到表单对象的属性中
         pubForm.value.cover_img = files[0]
         // 将图片文件，显示到img标签中
         const url = URL.createObjectURL(files[0])
         imgRef.value.setAttribute('src', url)
     }
+}
+
+// 表单中发布/（存为草稿）
+const pubArticle = (str) => {
+    pubForm.value.state = str // 保存到表单对象中
+    
 }
 onMounted(() => {
     getArticleCates()
@@ -204,11 +216,7 @@ onMounted(() => {
 .search-box {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-
-    .btn-pub {
-        margin-top: 5px;
-    }
+    align-content: flex-start;
 }
 
 // 样式穿透
