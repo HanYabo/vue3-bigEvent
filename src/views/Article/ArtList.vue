@@ -57,7 +57,7 @@
         </el-card>
         <!-- 发表文章的 Dialog 对话框 -->
         <el-dialog title="发表文章" v-model="pubDialogVisible" fullscreen :before-close="handleClose">
-            <el-form :model="pubForm" :rules="pubFormRules" ref="" label-width="100px">
+            <el-form :model="pubForm" :rules="pubFormRules" ref="pubFormRef" label-width="100px">
                 <el-form-item label="文章标题" prop="title">
                     <el-input v-model="pubForm.title" placeholder="请输入标题"></el-input>
                 </el-form-item>
@@ -68,14 +68,15 @@
                 </el-form-item>
                 <el-form-item label="文章内容" prop="content">
                     <!-- 富文本处理器 -->
-                    <richTextEditor v-model="pubForm.content" :toolBarConfig="toolBarConfig"></richTextEditor>
+                    <!-- 此插件存在数据绑定bug，导致校验表单存在问题 -->
+                    <richTextEditor v-model="pubForm.content" :toolBarConfig="toolBarConfig" @change="contentChange"></richTextEditor>
                 </el-form-item>
                 <el-form-item label="文章封面" prop="cover_img">
                     <img src="../../assets/images/cover.jpg" alt="" class="cover-img" ref="imgRef" />
                     <!-- 文件选择框 默认被隐藏 -->
                     <input type="file" style="display: none;" accept="image/*" ref="iptFileRef"
                         @change="changeCover($event)" />
-                        <el-divider style="border-style: hidden; margin: 0"></el-divider>
+                    <el-divider style="border-style: hidden; margin: 0"></el-divider>
                     <el-button type="text" @click="selectCover">+ 选择封面</el-button>
                 </el-form-item>
                 <el-form-item>
@@ -138,12 +139,18 @@ const pubFormRules = ref({
         { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
     ],
     cate_id: [
-        { required: true, message: '请选择文章标题', trigger: 'blur' },
+        { required: true, message: '请选择文章标题', trigger: 'change' },
     ],
     content: [
-        { required: true, message: '请输入文章内容', trigger: 'blur' }
+        { required: true, message: '请输入文章内容', trigger: 'change' },
+    ],
+    cover_img: [
+        { required: true, message: '请选择封面', trigger: 'blur' }
     ]
 })
+
+// 表单验证规则对象
+const pubFormRef = ref(null)
 
 // 分类列表对象
 const cateList = ref([])
@@ -200,6 +207,7 @@ const changeCover = (e) => {
         const url = URL.createObjectURL(files[0])
         imgRef.value.setAttribute('src', url)
     }
+    pubFormRef.value.validateField('cover_img')
 }
 
 // 表单中发布/（存为草稿）
@@ -207,16 +215,22 @@ const pubArticle = (str) => {
     pubForm.value.state = str // 保存到表单对象中
 
     // 校验
-    pubForm.value.validate(async valid => {
-        if(valid) {
+    pubFormRef.value.validate(async valid => {
+        if (valid) {
             // 通过
             console.log(pubForm.value)
-        }else {
+        } else {
             return false
         }
     })
-
 }
+
+// 富文本编辑器内容改变触发事件
+const contentChange = () => {
+    // TODO 富文本编辑器内容改变时重新校验存在bug，暂时无解决措施
+    pubFormRef.value.validateField('content')
+}
+
 onMounted(() => {
     getArticleCates()
 })
