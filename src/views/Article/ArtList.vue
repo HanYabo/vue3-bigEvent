@@ -30,7 +30,7 @@
             </div>
 
             <!-- 文章表格区域 -->
-            <!-- <el-table data="" style="width: 100%;" border stripe>
+            <el-table data="" style="width: 100%;" border stripe>
                 <el-table-column label="文章标题" prop="title">
                     <template v-slot="scope">
                         <el-link type="primary"></el-link>
@@ -49,14 +49,14 @@
                         <el-button type="danger" size="mini">删除</el-button>
                     </template>
                 </el-table-column>
-            </el-table> -->
+            </el-table>
             <!-- 分页区域 -->
             <!-- <el-pagination @size-change="handleSizeChangeFn" @current-change="handleCurrentChangeFn"
                 :current-page.sync="q.pagenum" :page-sizes="[2, 3, 5, 10]" :page-size.sync="q.pagesize"
                 layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination> -->
         </el-card>
         <!-- 发表文章的 Dialog 对话框 -->
-        <el-dialog title="发表文章" v-model="pubDialogVisible" fullscreen :before-close="handleClose">
+        <el-dialog title="发表文章" v-model="pubDialogVisible" fullscreen :before-close="handleClose" @close="dialogClose">
             <el-form :model="pubForm" :rules="pubFormRules" ref="pubFormRef" label-width="100px">
                 <el-form-item label="文章标题" prop="title">
                     <el-input v-model="pubForm.title" placeholder="请输入标题"></el-input>
@@ -68,7 +68,7 @@
                 </el-form-item>
                 <el-form-item label="文章内容" prop="content">
                     <!-- 富文本处理器 -->
-                    <!-- 此插件存在数据绑定bug，导致校验表单存在问题 -->
+                    <!-- TODO 此插件存在BUG，data改变后视图无法改变，且编辑器内容删除后残留<br>导致无法重新触发校验规则 -->
                     <richTextEditor v-model="pubForm.content" :toolBarConfig="toolBarConfig" @change="contentChange"></richTextEditor>
                 </el-form-item>
                 <el-form-item label="文章封面" prop="cover_img">
@@ -79,7 +79,7 @@
                     <el-divider style="border-style: hidden; margin: 0"></el-divider>
                     <el-button type="text" @click="selectCover">+ 选择封面</el-button>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item prop="state">
                     <el-button type="primary" @click="pubArticle('已发布')">发布</el-button>
                     <el-button type="info" @click="pubArticle('草稿')">保存草稿</el-button>
                 </el-form-item>
@@ -91,9 +91,10 @@
 <script setup>
 // webpack会把图片变为一个base64字符串/在打包后的图片临时地址
 import imgObj from '../../assets/images/cover.jpg'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, onMounted } from 'vue'
 import { getArticleCatesAPI, uploadArticleCateAPI } from '@/api'
+
 
 // 查询参数对象
 const query = ref({
@@ -225,10 +226,20 @@ const pubArticle = (str) => {
             fd.append('cover_img', pubForm.value.cover_img)
             fd.append('state', pubForm.value.state)
 
-            // 向后端传FormData数据，后端接收异常问题
-            const res = await uploadArticleCateAPI(fd)
-            console.log(res)
-            
+            const { data: res } = await uploadArticleCateAPI(fd)
+            if (res.status === 0) {
+                ElMessage({
+                    message: '发布文章成功！',
+                    type: 'success'
+                })
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'warning'
+                })
+            }
+            // 关闭对话框
+            pubDialogVisible.value = false
         } else {
             return false
         }
@@ -239,6 +250,13 @@ const pubArticle = (str) => {
 const contentChange = () => {
     // TODO 富文本编辑器内容改变时重新校验存在Bug
     pubFormRef.value.validateField('content')
+}
+
+// 新增文章对话框关闭时，清空表单
+const dialogClose = () => {
+    pubFormRef.value.resetFields()
+    // 手动重置img
+    imgRef.value.setAttribute('src', imgObj)
 }
 
 onMounted(() => {
