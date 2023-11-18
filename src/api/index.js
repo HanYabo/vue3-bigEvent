@@ -112,3 +112,15 @@ export const updateArticleCateByIdAPI = ({ id, name, alias }) => {
     })
 }
 
+// 新增文章接口
+export const uploadArticleCateAPI = data => {
+    return request({
+        url: '/self/article/add',
+        method: 'POST',
+        headers: {
+            'Content-Type':'multipart/form-data'
+        },
+        data
+    })
+}
+

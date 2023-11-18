@@ -93,7 +93,7 @@
 import imgObj from '../../assets/images/cover.jpg'
 import { ElMessageBox } from 'element-plus'
 import { ref, onMounted } from 'vue'
-import { getArticleCatesAPI } from '@/api'
+import { getArticleCatesAPI, uploadArticleCateAPI } from '@/api'
 
 // 查询参数对象
 const query = ref({
@@ -218,7 +218,17 @@ const pubArticle = (str) => {
     pubFormRef.value.validate(async valid => {
         if (valid) {
             // 通过
-            console.log(pubForm.value)
+            const fd = new FormData() // 准备一个表单数据对象的容器
+            fd.append('title', pubForm.value.title)
+            fd.append('cate_id', pubForm.value.cate_id)
+            fd.append('content', pubForm.value.content)
+            fd.append('cover_img', pubForm.value.cover_img)
+            fd.append('state', pubForm.value.state)
+
+            // 向后端传FormData数据，后端接收异常问题
+            const res = await uploadArticleCateAPI(fd)
+            console.log(res)
+            
         } else {
             return false
         }
@@ -227,7 +237,7 @@ const pubArticle = (str) => {
 
 // 富文本编辑器内容改变触发事件
 const contentChange = () => {
-    // TODO 富文本编辑器内容改变时重新校验存在bug，暂时无解决措施
+    // TODO 富文本编辑器内容改变时重新校验存在Bug
     pubFormRef.value.validateField('content')
 }
 
