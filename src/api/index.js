@@ -117,10 +117,21 @@ export const uploadArticleCateAPI = data => {
     return request({
         url: '/self/article/add',
         method: 'POST',
-        headers: {
-            'Content-Type':'multipart/form-data'
-        },
         data
+    })
+}
+
+// 获取文章列表接口
+export const getArticleListAPI = ({ pagenum, pagesize, cate_id, state }) => {
+    return request({
+        url: '/self/article/list',
+        method: 'GET',
+        params: {
+            pagenum,
+            pagesize,
+            cate_id,
+            state
+        }
     })
 }
 

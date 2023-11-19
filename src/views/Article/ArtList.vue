@@ -30,23 +30,23 @@
             </div>
 
             <!-- 文章表格区域 -->
-            <el-table data="" style="width: 100%;" border stripe>
+            <el-table :data="artList" style="width: 100%;" border stripe>
                 <el-table-column label="文章标题" prop="title">
-                    <template v-slot="scope">
-                        <el-link type="primary"></el-link>
+                    <template #default="scope">
+                        <el-link type="primary">{{ scope.row.title }}</el-link>
                     </template>
                 </el-table-column>
-                <el-table-column label="分类" prop="cate_name"></el-table-column>
+                <el-table-column label="分类" prop="cate_name">
+                </el-table-column>
                 <el-table-column label="发表时间" prop="pub_date">
-                    <template v-slot="scope">
-                        <span></span>
+                    <template #default="scope">
+                        <span>{{ scope.row.pub_date }}</span>
                     </template>
-
                 </el-table-column>
                 <el-table-column label="状态" prop="state"></el-table-column>
                 <el-table-column label="操作">
-                    <template v-slot="{ row }">
-                        <el-button type="danger" size="mini">删除</el-button>
+                    <template #default="scope">
+                        <el-button type="danger" size="small">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -69,7 +69,7 @@
                 <el-form-item label="文章内容" prop="content">
                     <!-- 富文本处理器 -->
                     <!-- TODO 此插件存在BUG，data改变后视图无法改变，且编辑器内容删除后残留<br>导致无法重新触发校验规则 -->
-                    <richTextEditor v-model="pubForm.content" :toolBarConfig="toolBarConfig" @change="contentChange"></richTextEditor>
+                    <richTextEditor v-model="pubForm.content" :toolBarConfig="toolBarConfig" @change="contentChange" ref="quillRef"></richTextEditor>
                 </el-form-item>
                 <el-form-item label="文章封面" prop="cover_img">
                     <img src="../../assets/images/cover.jpg" alt="" class="cover-img" ref="imgRef" />
@@ -93,15 +93,14 @@
 import imgObj from '../../assets/images/cover.jpg'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, onMounted } from 'vue'
-import { getArticleCatesAPI, uploadArticleCateAPI } from '@/api'
-
+import { getArticleCatesAPI, uploadArticleCateAPI, getArticleListAPI } from '@/api'
 
 // 查询参数对象
 const query = ref({
-    pageNum: 1,
-    pageSize: 2,
-    cate_id: '',
-    state: ''
+    pagenum: 1,
+    pagesize: 2,
+    cate_id: 0,
+    state: '' 
 })
 
 // quill-editor配置项
@@ -156,9 +155,17 @@ const pubFormRef = ref(null)
 // 分类列表对象
 const cateList = ref([])
 
+// 文章列表对象
+const artList = ref([])
+// 总数据条数
+const total = ref(0)
+
 const iptFileRef = ref(null)
 
 const imgRef = ref(null)
+
+// 富文本编辑器ref对象
+const quillRef = ref(null)
 
 // 发表文章按钮点击事件
 const showPubDialog = () => {
@@ -248,19 +255,34 @@ const pubArticle = (str) => {
 
 // 富文本编辑器内容改变触发事件
 const contentChange = () => {
-    // TODO 富文本编辑器内容改变时重新校验存在Bug
+    // TODO vue3-quill-editor富文本编辑器内容改变时重新校验存在Bug
     pubFormRef.value.validateField('content')
 }
 
 // 新增文章对话框关闭时，清空表单
 const dialogClose = () => {
     pubFormRef.value.resetFields()
-    // 手动重置img
+    // 手动重置img 
     imgRef.value.setAttribute('src', imgObj)
+}
+
+// 获取文章列表
+const getArticleList = async () => {
+    const { data: res } = await getArticleListAPI(query.value)
+    if(res.status === 0){
+        artList.value = res.data
+        total.value = res.total
+    }else {
+        ElMessage({
+            message: res.message,
+            type: 'warning'
+        })
+    }
 }
 
 onMounted(() => {
     getArticleCates()
+    getArticleList()
 })
 </script>
   
