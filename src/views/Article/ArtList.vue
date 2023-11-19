@@ -9,20 +9,20 @@
             <div class="search-box">
                 <el-form :inline="true">
                     <el-form-item label="文章分类">
-                        <el-select placeholder="请选择分类" size="small">
+                        <el-select placeholder="请选择分类" v-model="query.cate_id">
                             <el-option v-for="item in cateList" :key="item.id" :label="item.name"
                                 :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="发布状态" style="margin-left: 15px">
-                        <el-select placeholder="请选择状态" size="small">
+                        <el-select placeholder="请选择状态" v-model="query.state">
                             <el-option label="已发布" value="已发布"></el-option>
                             <el-option label="草稿" value="草稿"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary">筛选</el-button>
-                        <el-button type="info">重置</el-button>
+                        <el-button type="primary" @click="screenCategory">筛选</el-button>
+                        <el-button type="info" @click="resetCategory">重置</el-button>
                     </el-form-item>
                 </el-form>
                 <!-- 发表文章的按钮 -->
@@ -52,7 +52,7 @@
             </el-table>
             <!-- 分页区域 -->
             <el-pagination v-model:current-page="query.pagenum" v-model:page-size="query.pagesize"
-                :page-sizes="[10]" layout="total, sizes, prev, pager, next, jumper"
+                :page-sizes="[2, 3, 5, 10]" layout="total, sizes, prev, pager, next, jumper"
                 :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </el-card>
         <!-- 发表文章的 Dialog 对话框 -->
@@ -100,7 +100,7 @@ import { getArticleCatesAPI, uploadArticleCateAPI, getArticleListAPI } from '@/a
 const query = ref({
     pagenum: 1,
     pagesize: 2,
-    cate_id: 0,
+    cate_id: '',
     state: ''
 })
 
@@ -222,7 +222,6 @@ const changeCover = (e) => {
 // 获取文章列表
 const getArticleList = async () => {
     const { data: res } = await getArticleListAPI(query.value)
-    console.log(res)
     if (res.status === 0) {
         artList.value = res.data
         total.value = res.total
@@ -286,15 +285,29 @@ const dialogClose = () => {
 
 // 分页-每页条数改变触发
 const handleSizeChange = (sizes) => {
-    console.log(sizes)
-    query.pagesize = sizes
+    query.value.pagesize = sizes
     getArticleList()
 }
 
 // 当前页码改变时触发
 const handleCurrentChange = (nowPage) => {
-    console.log(nowPage)
-    query.pagenum = nowPage
+    query.value.pagenum = nowPage
+    getArticleList()
+}
+
+// 筛选文章分类按钮点击事件
+const screenCategory = () => {
+    query.value.pagenum = 1
+    query.value.pagesize = 2
+    getArticleList()
+}
+
+// 重置文章分类按钮点击事件
+const resetCategory = () => {
+    query.value.pagenum = 1
+    query.value.pagesize = 2
+    query.value.cate_id = ''
+    query.value.state = ''
     getArticleList()
 }
 
