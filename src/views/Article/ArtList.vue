@@ -286,6 +286,7 @@ const dialogClose = () => {
 // 分页-每页条数改变触发
 const handleSizeChange = (sizes) => {
     query.value.pagesize = sizes
+    query.value.pagenum = 1
     getArticleList()
 }
 
