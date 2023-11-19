@@ -135,3 +135,14 @@ export const getArticleListAPI = ({ pagenum, pagesize, cate_id, state }) => {
     })
 }
 
+// 根据id获取文章详情接口
+export const getArticleDetailAPI = (id) => {
+    return request({
+        url: `/self/article/info/${id}`,
+        method: 'GET',
+        params: {
+            id
+        }
+    })
+}
+

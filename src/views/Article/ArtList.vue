@@ -33,7 +33,7 @@
             <el-table :data="artList" style="width: 100%;" border stripe>
                 <el-table-column label="文章标题" prop="title">
                     <template #default="scope">
-                        <el-link type="primary">{{ scope.row.title }}</el-link>
+                        <el-link type="primary" @click="showArtDetail(scope.row.id)">{{ scope.row.title }}</el-link>
                     </template>
                 </el-table-column>
                 <el-table-column label="分类" prop="cate_name">
@@ -52,8 +52,8 @@
             </el-table>
             <!-- 分页区域 -->
             <el-pagination v-model:current-page="query.pagenum" v-model:page-size="query.pagesize"
-                :page-sizes="[2, 3, 5, 10]" layout="total, sizes, prev, pager, next, jumper"
-                :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+                :page-sizes="[2, 3, 5, 10]" layout="total, sizes, prev, pager, next, jumper" :total="total"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </el-card>
         <!-- 发表文章的 Dialog 对话框 -->
         <el-dialog title="发表文章" v-model="pubDialogVisible" fullscreen :before-close="handleClose" @close="dialogClose">
@@ -86,6 +86,24 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
+
+        <!-- 查看文章详情的对话框 -->
+        <el-dialog title="文章预览" v-model="detailVisible" width="80%">
+            <h1 class="title">{{ artDetail.title }}</h1>
+
+            <div class="info">
+                <span>作者：{{ artDetail.nickname || artDetail.username }}</span>
+                <span>发布时间：{{ $formatDate(artDetail.pub_date) }}</span>
+                <span>所属分类：{{ artDetail.cate_name }}</span>
+                <span>状态：{{ artDetail.state }}</span>
+            </div>
+            <!-- 分割线 -->
+            <el-divider></el-divider>
+            <!-- 文章封面 -->
+            <img :src="baseURL + artDetail.cover_img" alt="文章封面" />
+            <!-- 文章详情 -->
+            <div v-html="artDetail.content" class="detail-box"></div>
+        </el-dialog>
     </div>
 </template>
   
@@ -94,7 +112,7 @@
 import imgObj from '../../assets/images/cover.jpg'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, onMounted } from 'vue'
-import { getArticleCatesAPI, uploadArticleCateAPI, getArticleListAPI } from '@/api'
+import { getArticleCatesAPI, uploadArticleCateAPI, getArticleListAPI, getArticleDetailAPI } from '@/api'
 
 // 查询参数对象
 const query = ref({
@@ -167,6 +185,12 @@ const imgRef = ref(null)
 
 // 富文本编辑器ref对象
 const quillRef = ref(null)
+
+// 文章详情对话框控制对象
+const detailVisible = ref(false)
+
+// 文章详情对象
+const artDetail = ref({})
 
 // 发表文章按钮点击事件
 const showPubDialog = () => {
@@ -310,6 +334,15 @@ const resetCategory = () => {
     query.value.cate_id = ''
     query.value.state = ''
     getArticleList()
+}
+
+// 获取文章详情
+const showArtDetail = async (id) => {
+    detailVisible.value = true
+    const { data: res } = await getArticleDetailAPI(id)
+    console.log(res)
+    artDetail.value = res.data
+
 }
 
 onMounted(() => {
