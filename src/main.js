@@ -9,6 +9,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import Quill from "vue3-quill-editor"
 import "vue3-quill-editor/lib/style.css"
+import dayjs from 'dayjs'
 
 // pinia持久化插件
 const pinia = createPinia()
@@ -28,5 +29,8 @@ app.component('Echarts', Echarts)
 app.use(router)
 app.use(pinia)
 app.use(Quill)
+app.config.globalProperties.$formatDate = (dateObj) => {
+    return dayjs(dateObj).format('YYYY-MM-DD HH:mm:ss')
+}
 
 app.mount('#app')

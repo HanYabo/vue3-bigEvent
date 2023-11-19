@@ -40,7 +40,7 @@
                 </el-table-column>
                 <el-table-column label="发表时间" prop="pub_date">
                     <template #default="scope">
-                        <span>{{ scope.row.pub_date }}</span>
+                        <span>{{ $formatDate(scope.row.pub_date) }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="状态" prop="state"></el-table-column>
