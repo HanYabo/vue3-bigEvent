@@ -51,9 +51,9 @@
                 </el-table-column>
             </el-table>
             <!-- 分页区域 -->
-            <!-- <el-pagination @size-change="handleSizeChangeFn" @current-change="handleCurrentChangeFn"
-                :current-page.sync="q.pagenum" :page-sizes="[2, 3, 5, 10]" :page-size.sync="q.pagesize"
-                layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination> -->
+            <el-pagination v-model:current-page="query.pagenum" v-model:page-size="query.pagesize"
+                :page-sizes="[10]" layout="total, sizes, prev, pager, next, jumper"
+                :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </el-card>
         <!-- 发表文章的 Dialog 对话框 -->
         <el-dialog title="发表文章" v-model="pubDialogVisible" fullscreen :before-close="handleClose" @close="dialogClose">
@@ -69,7 +69,8 @@
                 <el-form-item label="文章内容" prop="content">
                     <!-- 富文本处理器 -->
                     <!-- TODO 此插件存在BUG，data改变后视图无法改变，且编辑器内容删除后残留<br>导致无法重新触发校验规则 -->
-                    <richTextEditor v-model="pubForm.content" :toolBarConfig="toolBarConfig" @change="contentChange" ref="quillRef"></richTextEditor>
+                    <richTextEditor v-model="pubForm.content" :toolBarConfig="toolBarConfig" @change="contentChange"
+                        ref="quillRef"></richTextEditor>
                 </el-form-item>
                 <el-form-item label="文章封面" prop="cover_img">
                     <img src="../../assets/images/cover.jpg" alt="" class="cover-img" ref="imgRef" />
@@ -100,7 +101,7 @@ const query = ref({
     pagenum: 1,
     pagesize: 2,
     cate_id: 0,
-    state: '' 
+    state: ''
 })
 
 // quill-editor配置项
@@ -218,6 +219,21 @@ const changeCover = (e) => {
     pubFormRef.value.validateField('cover_img')
 }
 
+// 获取文章列表
+const getArticleList = async () => {
+    const { data: res } = await getArticleListAPI(query.value)
+    console.log(res)
+    if (res.status === 0) {
+        artList.value = res.data
+        total.value = res.total
+    } else {
+        ElMessage({
+            message: res.message,
+            type: 'warning'
+        })
+    }
+}
+
 // 表单中发布/（存为草稿）
 const pubArticle = (str) => {
     pubForm.value.state = str // 保存到表单对象中
@@ -247,6 +263,8 @@ const pubArticle = (str) => {
             }
             // 关闭对话框
             pubDialogVisible.value = false
+            // 刷新文章列表
+            getArticleList()
         } else {
             return false
         }
@@ -266,18 +284,18 @@ const dialogClose = () => {
     imgRef.value.setAttribute('src', imgObj)
 }
 
-// 获取文章列表
-const getArticleList = async () => {
-    const { data: res } = await getArticleListAPI(query.value)
-    if(res.status === 0){
-        artList.value = res.data
-        total.value = res.total
-    }else {
-        ElMessage({
-            message: res.message,
-            type: 'warning'
-        })
-    }
+// 分页-每页条数改变触发
+const handleSizeChange = (sizes) => {
+    console.log(sizes)
+    query.pagesize = sizes
+    getArticleList()
+}
+
+// 当前页码改变时触发
+const handleCurrentChange = (nowPage) => {
+    console.log(nowPage)
+    query.pagenum = nowPage
+    getArticleList()
 }
 
 onMounted(() => {
