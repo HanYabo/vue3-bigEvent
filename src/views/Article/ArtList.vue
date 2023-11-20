@@ -45,8 +45,8 @@
                 </el-table-column>
                 <el-table-column label="状态" prop="state"></el-table-column>
                 <el-table-column label="操作">
-                    <template #default="scope">
-                        <el-button type="danger" size="small">删除</el-button>
+                    <template #default="{ row }">
+                        <el-button type="danger" size="small" @click="deleteArticle(row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -112,7 +112,7 @@
 import imgObj from '../../assets/images/cover.jpg'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, onMounted } from 'vue'
-import { getArticleCatesAPI, uploadArticleCateAPI, getArticleListAPI, getArticleDetailAPI } from '@/api'
+import { getArticleCatesAPI, uploadArticleCateAPI, getArticleListAPI, getArticleDetailAPI, deleteArticleAPI } from '@/api'
 import { baseURL } from '@/utils/request'
 
 // 查询参数对象
@@ -346,6 +346,20 @@ const showArtDetail = async (id) => {
     detailVisible.value = true
     const { data: res } = await getArticleDetailAPI(id)
     artDetail.value = res.data
+}
+
+// 删除文章按钮点击事件
+const deleteArticle = async (id) => {
+    const { data: res} = await deleteArticleAPI(id)
+    if(res.status !== 0) return ElMessage({
+        message: res.message,
+        type: 'warning'
+    })
+    ElMessage({
+        message: '删除成功！',
+        type:'success'
+    })
+    getArticleList()
 }
 
 onMounted(() => {

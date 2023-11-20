@@ -146,3 +146,14 @@ export const getArticleDetailAPI = (id) => {
     })
 }
 
+// 根据id删除文章
+export const deleteArticleAPI = (id) => {
+    return request({
+        url: `/self/article/delete/${id}`,
+        method: 'GET',
+        params: {
+            id
+        }
+    })
+}
+
