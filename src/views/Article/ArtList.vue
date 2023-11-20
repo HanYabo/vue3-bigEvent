@@ -100,7 +100,7 @@
             <!-- 分割线 -->
             <el-divider></el-divider>
             <!-- 文章封面 -->
-            <img v-if="artDetail.cover_img" :src="baseURL + artDetail.cover_img" alt="文章封面"/>
+            <img v-if="artDetail.cover_img" :src="baseURL + artDetail.cover_img" alt="文章封面" class="cover"/>
             <!-- 文章详情 -->
             <div v-html="artDetail.content" class="detail-box"></div>
         </el-dialog>
@@ -113,6 +113,7 @@ import imgObj from '../../assets/images/cover.jpg'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, onMounted } from 'vue'
 import { getArticleCatesAPI, uploadArticleCateAPI, getArticleListAPI, getArticleDetailAPI } from '@/api'
+import { baseURL } from '@/utils/request'
 
 // 查询参数对象
 const query = ref({
@@ -192,7 +193,8 @@ const detailVisible = ref(false)
 // 文章详情对象
 const artDetail = ref({})
 
-const baseURL = 'http://127.0.0.1:8080/'
+// 基地址
+const baseURL = baseURL
 
 // 发表文章按钮点击事件
 const showPubDialog = () => {
@@ -393,6 +395,14 @@ onMounted(() => {
     span {
         margin-right: 20px;
     }
+}
+
+.cover {
+    max-width: 100%;
+    height: auto;
+    // 图片居中
+    display: block;
+    margin: 0 auto;
 }
 
 // 修改 dialog 内部元素的样式，需要添加样式穿透

@@ -3,8 +3,10 @@ import { useTokenStore } from '../stores'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
 const tokenStore = useTokenStore()
+
+export const baseURL = 'http://127.0.0.1:8080'
 const instance = axios.create({
-    baseURL: 'http://127.0.0.1:8080'
+    baseURL
 })
 
 // 请求拦截器
