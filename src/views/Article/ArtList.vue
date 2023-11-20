@@ -100,7 +100,7 @@
             <!-- 分割线 -->
             <el-divider></el-divider>
             <!-- 文章封面 -->
-            <img v-if="artDetail.cover_img" :src="baseURL + artDetail.cover_img" alt="文章封面" class="cover"/>
+            <img v-if="artDetail.cover_img" :src="BASEURL + artDetail.cover_img" alt="文章封面" class="cover"/>
             <!-- 文章详情 -->
             <div v-html="artDetail.content" class="detail-box"></div>
         </el-dialog>
@@ -194,7 +194,8 @@ const detailVisible = ref(false)
 const artDetail = ref({})
 
 // 基地址
-const baseURL = baseURL
+const BASEURL = baseURL
+
 
 // 发表文章按钮点击事件
 const showPubDialog = () => {
@@ -344,7 +345,6 @@ const resetCategory = () => {
 const showArtDetail = async (id) => {
     detailVisible.value = true
     const { data: res } = await getArticleDetailAPI(id)
-    console.log(res)
     artDetail.value = res.data
 }
 
