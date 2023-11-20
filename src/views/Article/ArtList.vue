@@ -359,7 +359,15 @@ const deleteArticle = async (id) => {
         message: '删除成功！',
         type:'success'
     })
+    // 在最后一页，删除最后一条数据时，页码回到了上一页，但数据没有显示
+    // 保证pagenum最小值为1
+    if(artList.value.length === 1) {
+        if(query.pagenum > 1) {
+            query.value.pagenum--
+        }
+    }
     getArticleList()
+    
 }
 
 onMounted(() => {
